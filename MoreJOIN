@@ -83,3 +83,29 @@ SELECT title, name
 FROM movie JOIN casting ON (id=movieid)
 JOIN actor ON (actor.id = actorid)
 WHERE ord=1 AND  yr = 1962
+
+
+
+--#11
+Which were the busiest years for 'John Travolta', 
+show the year and the number of movies he made each year for any year in which he made more than 2 movies.
+
+SELECT yr,COUNT(title) FROM
+  movie JOIN casting ON movie.id=movieid
+         JOIN actor   ON actorid=actor.id
+where name='John Travolta'
+GROUP BY yr
+HAVING COUNT(title)=(SELECT MAX(c) FROM
+(SELECT yr,COUNT(title) AS c FROM
+   movie JOIN casting ON movie.id=movieid
+         JOIN actor   ON actorid=actor.id
+ where name='John Travolta'
+ GROUP BY yr) AS t
+)
+
+
+--13.
+Obtain a list, in alphabetical order, of actors who've had at least 30 starring roles.
+
+SELECT name from actor 
+JOIN casting ON(actor.id=actorid AND (SELECT COUNT(ord) from casting WHERE actorid=actor.id AND ord=1 )>=30) GROUP BY name
